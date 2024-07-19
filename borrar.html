@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliminar moto</title>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://robertsallent.com/css/generic.css">
+    <script>
+        $(document).ready(function(){
+            $('#borrar').click(function(){
+                $.ajax({
+                    url: urlBase+'/moto/'+getId(),
+                    type: 'DELETE',
+                    dataType: 'json',
+                    success: function(r){
+                        salida.innerHTML = "Borrado "+r.status;
+
+                        if (r.status == "ERROR") {
+                            salida.innerHTML += r.message;
+                        }
+                            setTimeout(function(){location.href='index.html';}, 3000);
+                    },
+                    error:function(r){
+                        salida.innerHTML = "No se pudo borrar: "+r.status;
+                    }
+                })
+            })
+        })
+    </script>
+</head>
+    <body>
+        <h1>Borrar moto</h1>
+        <ul>
+            <li><a href="index.html">Lista de motos</a></li>
+            <li><a href="nuevo.html">Nueva moto</a></li>
+        </ul>
+
+        <h2>Formulario de borrado</h2>
+        <p>Por favor conirma que deseas borrar:</p>
+
+        <button type="button" id="borrar">Borrar</button>
+
+        <div id="links">
+            <a onclick="location.href='ver.html?id='+getId()">Ir a detalles</a>
+            <a onclick="location.href='editar.html?id='+getId()">Editar</a>
+        </div>
+
+        <output id="salida"></output>
+    </body>
+</html>

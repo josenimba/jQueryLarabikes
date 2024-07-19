@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de motos</title>
+
+    <script src="js/script.js"></script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://robertsallent.com/css/generic.css">
+
+    <script>
+        //funcion para realizar la peticion GET
+        function peticion(url){
+            //$.get() realiza la peticion
+            //.done() se ejecuta si todo va bine
+            //.fail() se ejecuta si hay un error
+            $.get(url).done(function(json){
+                $('#salida').html(
+                    json.status=='OK'?
+                        generarTabla(json) : //genera la tabla resultados
+                        'Se ha producido un error '+json.message
+                );
+            }).fail(function(){
+                $('#salida').text('Se ha producido un error');
+            });
+        }
+
+
+        //funcion para generar la tabla
+        function generarTabla(json){
+            var texto = "<table border='1'>";
+                texto += "<tr>";
+                texto += "<th>Id</th>";
+                texto += "<th>marca</th>";
+                texto += "<th>modelo</th>";
+                texto += "<th>kms</th>";
+                texto += "<th>precio</th>";
+                texto += "<th colspan='3'>Operaciones</th>";
+                texto += "</tr>";
+
+            if(json.results.length == 0){
+                texto += "<tr>";
+                texto += "<td colspan='8'>No hay resultados</td>";
+                texto += "</tr>";
+            }
+
+            for (const moto of json.results) {//para cada moto recuperada
+                texto += "<tr>";
+                texto += "<td>" + moto.id + "</td>";
+                texto += "<td>" + moto.marca + "</td>";
+                texto += "<td>" + moto.modelo + "</td>";
+                texto += "<td>" + moto.kms + " kms</td>";
+                texto += "<td>" + moto.precio + " €</td>";
+                texto += "<td><a href='ver.html?id=" + moto.id + "'>Ver</a></td>";
+                texto += "<td><a href='editar.html?id=" + moto.id + "'>Editar</a></td>";
+                texto += "<td><a href='borrar.html?id=" + moto.id + "'>borrar</a></td>";
+                texto += "</tr>";
+            }
+
+            texto += "</table>";
+            return texto;
+                
+        }
+
+        $(document).ready(function(){
+            peticion(urlBase+'/motos');
+
+            $('#buscar').click(function(){
+                var c = $('#campo').val();
+                var v = $('#valor').val();
+                var url = urlBase+'/motos';
+
+                if(v!='') //si se indica un valor para buscar
+                    url +='/'+c+'/'+v;
+
+                peticion(url);
+                            
+            });
+
+            $('#quitar').click(function(){
+                peticion(urlBase+'/motos');
+                $('#valor').val('');
+            });
+        });
+    </script>
+</head>
+    <body>
+        <h1>Lista de motos</h1>
+        <ul id="menu">
+            <li><a href="nuevo.html">Nueva moto</a></li>
+        </ul>
+
+        <h2>Formulario de búsqueda</h2>
+        <select id="campo">
+            <option value="marca">Marca</option>
+            <option value="modelo">Modelo</option>
+            <option value="matricula">Matricula</option>
+        </select>
+
+        <input type="text" id="valor">
+        <button type="button" id="buscar">Buscar</button>
+        <button type="button" id="quitar">Quitar</button>
+
+        <h2>Listado</h2>
+        <div id="salida"></button>
+    </body>
+</html>

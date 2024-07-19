@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de la moto</title>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="js/script.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://robertsallent.com/css/generic.css">
+    <script>
+        $(document).ready(function(){
+            var url = urlBase+"/moto/"+getId() //prepara la URL
+
+            $.get(url).done(function(json){
+                $("#id").text(json.results[0].id);
+                $("#marca").text(json.results[0].marca);
+                $("#modelo").text(json.results[0].modelo);
+                $("#kms").text(json.results[0].kms);
+                $("#precio").text(json.results[0].precio);
+                $("#matriculada").text(json.results[0].matriculada==1?"Si":"No");
+                $("#matricula").text(json.results[0].matricula);
+                $("#color").text(json.results[0].color);
+                $("#color").css("color",json.results[0].color);
+            }).fail(function(){
+                $("#id").text("Error al recuperar la moto");
+            })
+        })
+    </script>
+</head>
+<body>
+    <h1>Detalles de la moto</h1>
+    <ul>
+        <li>Id: <output id="id"></output></li>
+        <li>Marca: <output id="marca"></output></li>
+        <li>Modelo: <output id="modelo"></output></li>
+        <li>Kms: <output id="kms"></output></li>
+        <li>Precio: <output id="precio"></output></li>
+        <li>Matriculada: <output id="matriculada"></output></li>
+        <li>Matricula: <output id="matricula"></output></li>
+        <li>Color: <output id="color"></output></li>
+    </ul>
+
+    <div>
+        <a onclick="location.href='editar.html?id='+getId()">Editar</a>
+        <a onclick="location.href='borrar.html?id='+getId()">Borrar</a>
+    </div>
+</body>
+</html>
